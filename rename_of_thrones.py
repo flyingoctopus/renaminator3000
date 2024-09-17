@@ -76,19 +76,22 @@ def generate_new_filename(old_filename):
     return new_filename
 
 def main(directory):
-    # Iterate over all files in the directory and rename them
+    # Iterate over files in the directory and its subdirectories up to a depth of 2
     for root, dirs, files in os.walk(directory):
-        for file in files:
-            old_path = os.path.join(root, file)
-            new_filename = generate_new_filename(file)
-            new_path = os.path.join(root, new_filename)
+        # Calculate the depth relative to the starting directory
+        depth = root[len(directory):].count(os.sep)
+        if depth < 2:  # Limit recursion depth to 2
+            for file in files:
+                old_path = os.path.join(root, file)
+                new_filename = generate_new_filename(file)
+                new_path = os.path.join(root, new_filename)
 
-            # Rename the file
-            try:
-                os.rename(old_path, new_path)
-                print(f"Renamed: {old_path} -> {new_path}")
-            except Exception as e:
-                print(f"Failed to rename {old_path}: {e}")
+                # Rename the file
+                try:
+                    os.rename(old_path, new_path)
+                    print(f"Renamed: {old_path} -> {new_path}")
+                except Exception as e:
+                    print(f"Failed to rename {old_path}: {e}")
 
 if __name__ == "__main__":
     # Check if the directory path is provided
