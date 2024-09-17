@@ -1,31 +1,65 @@
-# Renameinator 3000 🤖
+# Rename of Thrones 🏰
 
-Welcome to the **Renameinator 3000** — the only tool you'll ever need to make sense of the chaos that is your torrent downloads directory! Say goodbye to files named `IMG_9485739-XXFINAL-FINAL-V2.mkv` and hello to `The.Office.S03E05.1080p.2024.mkv`! 🎉
+Welcome to **Rename of Thrones** — the ultimate tool for bringing order to the chaotic filenames in your directory! Now with support for the Criterion Collection, 3D movies, and all the nerdy metadata you could ever need. 📁✨
 
 ## What Does It Do?
 
-The **Renameinator 3000** takes all those weird, cryptic filenames and turns them into a beautiful, human-readable format. It’s like a spa day for your files.
+The **Rename of Thrones** script scans through the files in a specified directory (and its immediate subdirectories) and renames them according to the following format:
+
+<name>.SXXEXX.<Criterion?>.<3D?>.<resolution>.<encoding>.<bit depth>.<audio format>.<year>.<extension>
+
+shell
+
+
+### Example:
+
+The.Great.Show.S01E01.Criterion.3D.1080p.HEVC.10bit.DDP5.1.2023.mkv
+
+markdown
+
+
+## Features
+
+- **Recursion Depth of 2**: Processes files in the specified directory and its immediate subdirectories. No deeper!
+- **Metadata Extraction**: Automatically identifies and retains essential metadata like seasons, episodes, resolution, encoding, bit depth, audio format, year, 3D format, and even whether it's part of the Criterion Collection!
+- **Superfluous Text Removal**: Say goodbye to ugly filenames with junk like `-RARBG`, `WEBRip`, `x264`, and more.
+- **Python-Powered**: Uses Python to smartly parse and rename files. 🐍
 
 ## Usage
 
-Simply run the script from your command line like so:
+1. **Save the Script**: Download or save `rename_of_thrones.py` to your local machine.
+2. **Open Terminal or Command Prompt**: Navigate to the directory where you saved `rename_of_thrones.py`.
+3. **Run the Script with the Directory Path**:
 
-```bash
-python rename_of_thrones.py /path/to/client_directory
-```
-May the blood of your namenies be forever on your sword. 🗡️
+    ```bash
+    python rename_of_thrones.py /path/to/client_directory
+    ```
+
+   Replace `/path/to/client_directory` with the actual path of the directory containing the files you want to rename.
+
+## Requirements
+
+- Python 3.x 🐍 (Because old Python is so last decade!)
+- Basic knowledge of using the command line (or at least how to copy-paste commands)
+
+## Notes
+
+- **Backup Your Files**: Before running the script, make sure you have backups. Rename of Thrones takes no prisoners and shows no mercy! 🏴‍☠️
+- **Customization**: Feel free to tweak the script to add more rules or metadata checks as needed.
+- **Testing**: Start with a small set of files to make sure it works as expected.
+
+## Why Use This?
+
+- You're tired of manually renaming files for hours.
+- You want to impress your friends with perfectly formatted filenames.
+- You're just a little OCD about file organization. (We get it!)
 
 ## Disclaimer
-This script is not responsible for any accidental renaming of files that reveal embarrassing contents. Always review before running! 🔍
-Why Use This?
 
-    Your boss told you to.
-    You have OCD and filenames like Copy of Copy of Final Report 2021 (Final).docx make your eye twitch.
-    You just love a good .md file.
+No scripts or dragons were harmed in the making of this tool. Use responsibly, or not — we're not your parents. 🤷‍♂️
 
-## Contributions
-I'd like to thank a single Titan RTX munching on 7b llama parameters with a whole lot of gumption for the regex support (I guess I did stuff too). 🦙
+## Contribute
 
-Feel free to contribute, complain, or send us coffee. ☕ If you manage to break this script in a new and exciting way, let me know!
+Found a bug? Have a cool feature idea? Open a pull request or send us a raven!
 
 Happy Renaming! 🚀
