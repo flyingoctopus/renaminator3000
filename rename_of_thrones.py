@@ -8,54 +8,54 @@ import os
 import re
 import sys
 
-# Function to extract metadata and construct a new filename
 def generate_new_name(old_name, is_directory=False):
     # Regular expressions for detecting common patterns
     patterns = {
         'season_episode': re.compile(r'[Ss](\d{1,2})[Ee](\d{1,2})'),
         'season_range': re.compile(r'[Ss](\d{1,2})-[Ss](\d{1,2})'),
-        'resolution': re.compile(r'(480p|720p|1080p|2160p)'),
+        'resolution': re.compile(r'(480p|720p|1080p|2160p|4K)'),
         'year': re.compile(r'(\d{4})'),
         'criterion': re.compile(r'(Criterion)'),
         '3D': re.compile(r'(3D)'),
-        'encoding': re.compile(r'(HEVC|x265|x264|H\.264)'),
-        'bit_depth': re.compile(r'(\d{2}bit)'),
-        'audio': re.compile(r'(DDP5\.1|AAC5\.1|DTS|TrueHD|Atmos|5\.1|7\.1)')
+        'encoding': re.compile(r'(HEVC|x265|x264|H\.264|AVC)'),
+        'bit_depth': re.compile(r'(\d{1,2}bit)'),
+        'audio': re.compile(r'(DDP5\.1|AAC5\.1|DTS|TrueHD|Atmos|5\.1|7\.1|AC3|EAC3)')
     }
 
-    # Expanded unwanted text patterns including new patterns from the manifest
+    # Expanded unwanted text patterns based on manifest.txt
     unwanted_patterns = (
         r'\b(RARBG|YTS|YIFY|AnimeRG|TGx|bonkai77|Reaktor|Golumpa|RH|Judas|CourseWikia\.com|'
-        r'FreeCourseWeb\.com|BluRay|HDTV|WEBRip|BRRip|WEB-DL|BDRip|REMUX|xvid|h264|'
+        r'FreeCourseWeb\.com|HDTV|WEBRip|BRRip|WEB-DL|xvid|'
         r'Downloaded from.*|Do not mirror|Subs|\.com|\.org|Dual Audio|Multi-Subs|'
         r'COMPLETE|PROPER|UNRATED|DUBBED|EXTENDED|DC|HDRip|AMZN|FLUX|'
         r'GalaxyTV|HMAX|Amazon|SARTRE|REPACK|NFO|EVO|Sample|HiQVE|FLAC|XviD|PublicHD|'
-        r'H\.265|H\.264|DDP5\.1|DD5\.1|DD2\.0|DUAL-AUDIO|NF|publichd|GalaxyRG|'
-        r'SARTRE|AnimeRG|YTS.LT|YTS.AM|YTS.MX|bonkai77|Reaktor|Judas|RH|Golumpa|'
+        r'H\.265|DUAL-AUDIO|NF|publichd|GalaxyRG|'
+        r'SARTRE|AnimeRG|YTS\.LT|YTS\.AM|YTS\.MX|bonkai77|Reaktor|Judas|RH|Golumpa|'
         r'TGx|ANiHLS|DB|GalaxyTV|PublicHD|COLLECTiVE|FLUX|NOGRP|YIFY|EVO|HODL|'
         r'Ghost|BONE|Vyndros|EMBER|SSK|LAZYCUNTS|SuccessfullCrab|PxL|'
-        r'WEBRip|BluRay|WEB-DL|BDRip|HDTV|HDRip|DVDrip|REMUX|xvid|x264|'
-        r'HEVC|x265|AAC|10bit|8bit|AAC5.1|DTS|FLAC|DD5.1|DDP5.1|5.1|7.1|Atmos|'
+        r'WEBRip|WEB-DL|HDRip|DVDrip|xvid|'
         r'Dual-Audio|Multi-Subs|COMPLETE|REPACK|UNRATED|DUBBED|EXTENDED|DC|HSBS|'
-        r'SUBBED|RAW|HDR|WEBRip|DSNP|AMZN|ATVP|HMAX|HMAX.WEBRip|HMAX.WEB-DL|'
-        r'HMAX.WEB|Downloaded from.*|Torrent downloaded from.*|Sample.*|Do not mirror|'
+        r'SUBBED|RAW|HDR|WEBRip|DSNP|AMZN|ATVP|HMAX|HMAX\.WEBRip|HMAX\.WEB-DL|'
+        r'HMAX\.WEB|Downloaded from.*|Torrent downloaded from.*|Sample.*|Do not mirror|'
         r'Readme.*|Subs|EXTRAS|Featurettes|DO_NOT_MIRROR|RARBG|Demonoid|1337x|'
         r'ETTV|ProstyleX|Angietorrents|Glodls|Thepiratebay|Katcr|CourseWikia|'
-        r'FreeCourseWeb|TutsGalaxy)\b'
+        r'FreeCourseWeb|TutsGalaxy|BluRay|BDRip|REMUX|BDRemux|iCV-MIRCrew|'
+        r'AnimeRocKers-RG|blad761|ETRG|CM|NTG|WORM|BYNDR|HeVK|RBG|EDGE2020|'
+        r'Classics|FiNAL|FAKE|Tigole|SAMPA|afm72|r00t|GGWP|Silence|'
+        r'Uploaded|Demonoid|Fansubs|Eng|Subs|Jap|Sub|MULTI|Ita|Spa|AC3|NEW|'
+        r'upcoming|releases|by|Xclusive|TELESYNC|Director\'s cut)'
     )
 
     # Handle extensions like '.mkv.part'
-    partial_extensions = ['.part', '.crdownload', '.!ut']  # Common temporary/partial extensions
+    partial_extensions = ['.part', '.crdownload', '.!ut']
 
     # Separate base name and extension(s)
     if not is_directory:
-        # Split the filename to handle multi-part extensions
         base_name, extension = os.path.splitext(old_name)
         while any(base_name.endswith(ext) for ext in partial_extensions):
-            # If the base name ends with a partial extension, append it to the current extension
             base_name, extra_extension = os.path.splitext(base_name)
             extension = extra_extension + extension
-        full_extension = extension  # The full extension chain, such as '.mkv.part'
+        full_extension = extension
     else:
         base_name, full_extension = old_name, ""
 
@@ -63,17 +63,15 @@ def generate_new_name(old_name, is_directory=False):
     if len(re.split(r'[.\s]+', base_name)) == 1:
         return old_name
 
-    # Preserve content inside brackets (e.g., [TGx]) unless it's in the unwanted patterns
-    base_name = re.sub(r'\[(' + unwanted_patterns + r')\]', '', base_name, flags=re.IGNORECASE)
+    # Remove content inside brackets and parentheses
+    base_name = re.sub(r'\([^)]*\)', '', base_name)
+    base_name = re.sub(r'\[[^]]*\]', '', base_name)
 
-    # Clean the name by removing unwanted text, but keep encoding information
+    # Clean the name by removing unwanted text
     clean_name = re.sub(unwanted_patterns, '', base_name, flags=re.IGNORECASE)
 
-    # Remove redundant periods introduced by removing unwanted patterns
-    clean_name = re.sub(r'\.\.+', '.', clean_name).strip('.')
-
-    # Remove any trailing hyphens, dots, or spaces left after cleaning
-    clean_name = re.sub(r'[-.\s]+$', '', clean_name)
+    # Remove redundant periods, hyphens, underscores, and spaces
+    clean_name = re.sub(r'[.\-_\s]+', '.', clean_name).strip('.')
 
     # Extract metadata from the cleaned name using regex
     season_episode = patterns['season_episode'].search(clean_name)
@@ -89,7 +87,7 @@ def generate_new_name(old_name, is_directory=False):
     # Construct the new name
     new_name_parts = [clean_name.strip()]
 
-    # Add metadata only if it's not already in the base name
+    # Add metadata in the correct order
     if season_episode and f"S{season_episode.group(1).zfill(2)}E{season_episode.group(2).zfill(2)}" not in clean_name:
         new_name_parts.append(f"S{season_episode.group(1).zfill(2)}E{season_episode.group(2).zfill(2)}")
     elif season_range and f"S{season_range.group(1).zfill(2)}-S{season_range.group(2).zfill(2)}" not in clean_name:
@@ -112,9 +110,8 @@ def generate_new_name(old_name, is_directory=False):
     # Join the parts with dots
     new_name = '.'.join(new_name_parts)
 
-    # Remove any accidental double dots or trailing unwanted characters
+    # Remove any accidental double dots
     new_name = re.sub(r'\.\.+', '.', new_name)
-    new_name = re.sub(r'[-.\s]+(?=\.)', '', new_name)  # Remove any trailing hyphens or spaces before the extension
 
     # Add back the file extension if it's a file
     if not is_directory:
@@ -123,7 +120,6 @@ def generate_new_name(old_name, is_directory=False):
     return new_name
 
 def main(directory):
-    # Iterate over files and directories in the directory and its subdirectories up to a depth of 2
     for root, dirs, files in os.walk(directory):
         # Calculate the depth relative to the starting directory
         depth = root[len(directory):].count(os.sep)
@@ -136,8 +132,11 @@ def main(directory):
 
                 # Rename the file
                 try:
-                    os.rename(old_path, new_path)
-                    print(f"Renamed: {old_path} -> {new_path}")
+                    if old_path != new_path:
+                        os.rename(old_path, new_path)
+                        print(f"Renamed: {old_path} -> {new_path}")
+                    else:
+                        print(f"Skipped (no change): {old_path}")
                 except Exception as e:
                     print(f"Failed to rename {old_path}: {e}")
 
@@ -152,7 +151,7 @@ def main(directory):
                 new_dir_path = os.path.join(root, new_dir_name)
 
                 # Check if new directory name already exists
-                if os.path.exists(new_dir_path):
+                if os.path.exists(new_dir_path) and old_dir_path != new_dir_path:
                     print(f"Skipping rename: {new_dir_path} already exists.")
                     continue
 
