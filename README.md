@@ -6,16 +6,14 @@ Welcome to **Rename of Thrones** — the ultimate tool for bringing order to the
 
 The **Rename of Thrones** script scans through the files in a specified directory (and its immediate subdirectories) and renames them according to the following format:
 
+```shell
 <name>.SXXEXX.<Criterion?>.<3D?>.<resolution>.<encoding>.<bit depth>.<audio format>.<year>.<extension>
-
-shell
-
+```
 
 ### Example:
-
+```shell
 The.Great.Show.S01E01.Criterion.3D.1080p.HEVC.10bit.DDP5.1.2023.mkv
-
-markdown
+```
 
 
 ## Features
